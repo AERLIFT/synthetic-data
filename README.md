@@ -1,4 +1,4 @@
-# aerlift-synthetic
+# synthetic-data
 
 Synthetic data generator for the AERLIFT multi-instrument personal exposure monitoring campaign. Generates format-faithful raw files for pipeline stress testing using SDV (Synthetic Data Vault) fitted on real instrument data.
 
