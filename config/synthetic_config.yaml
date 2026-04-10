@@ -1,0 +1,37 @@
+# ── paths ─────────────────────────────────────────────────────────────────────
+paths:
+  real_data:  '/Users/markcampmier/Library/Mobile Documents/com~apple~CloudDocs/aerlift/data/0_raw'
+  output:     '/Users/markcampmier/Library/Mobile Documents/com~apple~CloudDocs/aerlift/data/0_synthetic'
+  models:     'models'
+
+# ── campaign ──────────────────────────────────────────────────────────────────
+campaign:
+  start:          '2022-09-15 08:00:00'
+  n_days:         7
+  n_sensors:      3
+  seed:           42
+  gps_utc_offset: -7.0
+  utc_offset:     -7.0
+
+# ── instruments ───────────────────────────────────────────────────────────────
+instruments:
+  anemometer:
+    enabled:     true
+    force_refit: false
+
+  aranet:
+    enabled:     true
+    force_refit: false
+
+  lascar:
+    enabled:     true
+    force_refit: false
+
+  hhb:
+    enabled:     true
+    firmware:    'v1'
+    force_refit: false
+
+  upas:
+    enabled:     false    # pending fix
+    force_refit: false
