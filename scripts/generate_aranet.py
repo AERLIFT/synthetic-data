@@ -4,7 +4,7 @@ import random
 import numpy as np
 import pandas as pd
 from sdv.single_table import GaussianCopulaSynthesizer
-from sdv.metadata import Metadata
+from sdv.metadata import SingleTableMetadata
 from utils import (
     load_config, validate_dirs,
     load_synthesizer, model_exists, coerce_numeric, get_paths
@@ -27,7 +27,8 @@ def fit_aranet(real_data_dir, models_dir):
 
     data = coerce_numeric(data).dropna()
 
-    metadata = Metadata.detect_from_dataframe(data)
+    metadata = SingleTableMetadata()
+    metadata.detect_from_dataframe(data)
     metadata.save_to_json(str(metadata_path))
     print(f"✓ Metadata saved to {metadata_path}")
 
@@ -113,7 +114,8 @@ def generate_aranet_campaign(real_data_dir, output_dir, models_dir,
     outputs   = []
 
     for i in range(n_sensors):
-        sensor_id = f"{i+1:02X}{random.randint(0, 0xFFF):03X}"
+        rng_id    = np.random.default_rng(seed * 1_000_000 + i)
+        sensor_id = f"{i+1:02X}{int(rng_id.integers(0, 0x1000)):03X}"
         rng       = np.random.default_rng(seed + i)
         synthetic = synthesizer.sample(num_rows=n_records)
         synthetic = coerce_numeric(synthetic)

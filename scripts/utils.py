@@ -2,7 +2,7 @@
 from pathlib import Path
 import pandas as pd
 import yaml
-from sdv.utils import load_synthesizer as sdv_load_synthesizer
+import cloudpickle
 
 
 # ── config ────────────────────────────────────────────────────────────────────
@@ -46,7 +46,8 @@ def load_synthesizer(model_path):
     assert model_path.exists(), \
         f"No cached model found at {model_path} — run fit first"
     print(f"Loading cached model from {model_path}")
-    return sdv_load_synthesizer(str(model_path))
+    with open(model_path, 'rb') as fh:
+        return cloudpickle.load(fh)
 
 
 def model_exists(models_dir, instrument, version=None):

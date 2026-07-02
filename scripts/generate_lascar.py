@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sdv.single_table import GaussianCopulaSynthesizer
-from sdv.metadata import Metadata
+from sdv.metadata import SingleTableMetadata
 from utils import (
     load_config, validate_dirs,
     load_synthesizer, model_exists, coerce_numeric, get_paths
@@ -26,7 +26,8 @@ def fit_lascar(real_data_dir, models_dir):
     data = data[['co']]
     data = coerce_numeric(data).dropna()
 
-    metadata = Metadata.detect_from_dataframe(data)
+    metadata = SingleTableMetadata()
+    metadata.detect_from_dataframe(data)
     metadata.save_to_json(str(metadata_path))
     print(f"✓ Metadata saved to {metadata_path}")
 

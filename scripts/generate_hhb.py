@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sdv.single_table import GaussianCopulaSynthesizer
-from sdv.metadata import Metadata
+from sdv.metadata import SingleTableMetadata
 from utils import (
     load_config, validate_dirs, find_data_start,
     load_synthesizer, model_exists, coerce_numeric, get_paths
@@ -216,7 +216,8 @@ def fit_hhb(real_data_dir, models_dir):
             continue
 
         data          = pd.concat(dfs).reset_index(drop=True).dropna()
-        metadata      = Metadata.detect_from_dataframe(data)
+        metadata      = SingleTableMetadata()
+        metadata.detect_from_dataframe(data)
         model_path    = Path(models_dir) / f"hhb_{version}_synthesizer.pkl"
         metadata_path = Path(models_dir) / f"hhb_{version}_metadata.json"
         metadata.save_to_json(str(metadata_path))
