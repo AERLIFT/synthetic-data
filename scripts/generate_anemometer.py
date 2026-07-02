@@ -118,7 +118,7 @@ def generate_anemometer_campaign(real_data_dir, output_dir, models_dir,
         rng       = np.random.default_rng(seed + i)
         synthetic = synthesizer.sample(num_rows=n_records)
         synthetic = coerce_numeric(synthetic)
-        values    = synthetic['air_flow'].clip(lower=0).values
+        values    = synthetic['air_flow'].clip(lower=0).to_numpy().copy()
         values    = inject_edge_cases(values, rng)
         out       = write_anemometer(values, sensor_id,
                                      start=pd.Timestamp(start),

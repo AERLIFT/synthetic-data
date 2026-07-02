@@ -1,5 +1,10 @@
 # generate_campaign.py
+import sys
 from pathlib import Path
+
+# make `from utils import ...` work inside the generator modules
+sys.path.insert(0, str(Path(__file__).parent / 'scripts'))
+
 import time
 import numpy as np
 import pandas as pd
@@ -60,9 +65,15 @@ def generate_campaign_metadata(output_dir, n_sensors, seed, enabled):
             rows[i]['atmotube_sensor_id'] = f.stem.split('_')[0]
 
     if enabled.get('aulifants'):
-        dirs = sorted(d for d in (out / 'aulifants').iterdir() if d.is_dir())
-        for i, d in enumerate(dirs[:n_sensors]):
-            rows[i]['aulifants_sensor_id'] = d.stem.split('-Aulifant4-')[0]
+        all_dirs = [d for d in (out / 'aulifants').iterdir() if d.is_dir()]
+        # deduplicate by sensor prefix (multiple campaign dates may coexist)
+        seen = {}
+        for d in all_dirs:
+            prefix = d.stem.split('-Aulifant4-')[0]
+            seen[prefix] = prefix
+        sensor_prefixes = sorted(seen.keys())
+        for i, prefix in enumerate(sensor_prefixes[:n_sensors]):
+            rows[i]['aulifants_sensor_id'] = prefix
 
     df = pd.DataFrame(rows)
     meta_path = out / 'campaign_metadata.csv'
