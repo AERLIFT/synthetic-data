@@ -16,6 +16,7 @@ from scripts.generate_hhb        import generate_hhb_campaign
 from scripts.generate_upas       import generate_upas_campaign
 from scripts.generate_atmotube   import generate_atmotube_campaign
 from scripts.generate_aulifants  import generate_aulifants_campaign
+from scripts.generate_geocene    import generate_geocene_campaign
 from scripts.generate_ogawa      import generate_ogawa_campaign
 
 
@@ -74,6 +75,14 @@ def generate_campaign_metadata(output_dir, n_sensors, seed, enabled):
         sensor_prefixes = sorted(seen.keys())
         for i, prefix in enumerate(sensor_prefixes[:n_sensors]):
             rows[i]['aulifants_sensor_id'] = prefix
+
+    if enabled.get('geocene'):
+        geocene_file = out / 'geocene' / 'events.csv'
+        if geocene_file.exists():
+            gdf = pd.read_csv(geocene_file)
+            mission_ids = gdf['mission_id'].unique()
+            for i, mid in enumerate(mission_ids[:n_sensors]):
+                rows[i]['geocene_sensor_id'] = mid
 
     df = pd.DataFrame(rows)
     meta_path = out / 'campaign_metadata.csv'
@@ -227,6 +236,24 @@ def run_campaign(config_path='config/synthetic_config.yaml'):
         print(f"  Elapsed: {time.time() - t:.1f}s")
     else:
         print("\n── Aulifants — disabled")
+
+    # ── geocene ───────────────────────────────────────────────────────────────
+    if inst['geocene']['enabled']:
+        print("\n── Geocene ──────────────────────────────────────────────")
+        t = time.time()
+        results['geocene'] = generate_geocene_campaign(
+            real_data_dir = paths['real_data'] / 'geocene',
+            output_dir    = paths['output']    / 'geocene',
+            models_dir    = paths['models'],
+            n_sensors     = cfg['n_sensors'],
+            n_days        = cfg['n_days'],
+            start         = cfg['start'],
+            seed          = cfg['seed'],
+            force_refit   = inst['geocene']['force_refit'],
+        )
+        print(f"  Elapsed: {time.time() - t:.1f}s")
+    else:
+        print("\n── Geocene — disabled")
 
     # ── ogawa ─────────────────────────────────────────────────────────────────
     if inst['ogawa']['enabled']:

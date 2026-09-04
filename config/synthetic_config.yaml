@@ -44,5 +44,9 @@ instruments:
     enabled:     true
     force_refit: false
 
+  geocene:
+    enabled:     true
+    force_refit: false
+
   ogawa:
     enabled:     false
